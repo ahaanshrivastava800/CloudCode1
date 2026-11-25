@@ -1,0 +1,219 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* CodeMirror custom styles */
+.cm-editor {
+  height: 100%;
+  font-size: 14px;
+}
+
+.cm-editor.cm-focused {
+  outline: none;
+}
+
+/* Mobile accessory bar styles */
+.accessory-bar {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  padding: 8px;
+  padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (prefers-color-scheme: dark) {
+  .accessory-bar {
+    background: #1f2937;
+    border-top-color: #374151;
+  }
+}
+
+/* Snippet drawer styles */
+.snippet-drawer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: 50vh;
+  overflow-y: auto;
+  background: white;
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(100%);
+  transition: transform 0.3s ease-out;
+  z-index: 40;
+}
+
+.snippet-drawer.open {
+  transform: translateY(0);
+}
+
+@media (prefers-color-scheme: dark) {
+  .snippet-drawer {
+    background: #1f2937;
+  }
+}
+
+/* Mobile sheet view styles */
+.mobile-sheet {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  transition: transform 0.3s ease-out;
+  z-index: 50;
+}
+
+@media (prefers-color-scheme: dark) {
+  .mobile-sheet {
+    background: #111827;
+  }
+}
+
+/* Desktop split view */
+@media (min-width: 768px) {
+  .desktop-split {
+    display: flex;
+    height: 100%;
+  }
+  
+  .desktop-split > div {
+    flex: 1;
+    overflow: hidden;
+  }
+}
+
+/* Console output styles */
+.console-output {
+  font-family: 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', monospace;
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+@media (prefers-color-scheme: dark) {
+  .console-output {
+    background: #1f2937;
+    color: #e5e7eb;
+  }
+}
+
+.console-output.error {
+  color: #ef4444;
+}
+
+.console-output.success {
+  color: #10b981;
+}
+
+/* Terminal styles */
+.terminal-container {
+  background: #1e1e1e;
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.terminal-header {
+  background: #2d2d2d;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #3e3e3e;
+}
+
+.terminal-content {
+  background: #1e1e1e;
+  color: #e0e0e0;
+  padding: 12px;
+  min-height: 200px;
+  max-height: 400px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #4a4a4a #1e1e1e;
+}
+
+.terminal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.terminal-content::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+.terminal-content::-webkit-scrollbar-thumb {
+  background: #4a4a4a;
+  border-radius: 4px;
+}
+
+.terminal-content::-webkit-scrollbar-thumb:hover {
+  background: #5a5a5a;
+}
+
+.terminal-line {
+  margin-bottom: 4px;
+}
+
+.terminal-output {
+  margin: 8px 0;
+  padding: 8px;
+  background: #2d2d2d;
+  border-left: 3px solid #4a9eff;
+  border-radius: 4px;
+}
+
+.terminal-output pre {
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+}
