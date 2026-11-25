@@ -1,7 +1,7 @@
 # Project-Specific Agent Instructions
 
 ## Project Overview
-CodeFlow is a mobile-first Progressive Web Application (PWA) for coding with hybrid execution capabilities. This document provides specific instructions for AI agents working on this codebase.
+CloudCode is a mobile-first Progressive Web Application (PWA) for coding with hybrid execution capabilities. This document provides specific instructions for AI agents working on this codebase.
 
 ## Development Guidelines
 

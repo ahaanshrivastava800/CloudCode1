@@ -1,7 +1,7 @@
 import { openDB, DBSchema, IDBPDatabase } from 'idb'
 
 // Define the database schema
-interface CodeFlowDB extends DBSchema {
+interface CloudCodeDB extends DBSchema {
   files: {
     key: string
     value: {
@@ -70,16 +70,16 @@ interface CodeFlowDB extends DBSchema {
   }
 }
 
-const DB_NAME = 'CodeFlowDB'
+const DB_NAME = 'CloudCodeDB'
 const DB_VERSION = 1
 
-let db: IDBPDatabase<CodeFlowDB> | null = null
+let db: IDBPDatabase<CloudCodeDB> | null = null
 
 // Initialize the database
-export async function initDB(): Promise<IDBPDatabase<CodeFlowDB>> {
+export async function initDB(): Promise<IDBPDatabase<CloudCodeDB>> {
   if (db) return db
 
-  db = await openDB<CodeFlowDB>(DB_NAME, DB_VERSION, {
+  db = await openDB<CloudCodeDB>(DB_NAME, DB_VERSION, {
     upgrade(database) {
       // Files store
       if (!database.objectStoreNames.contains('files')) {

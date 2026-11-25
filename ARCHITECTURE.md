@@ -1,8 +1,8 @@
-# CodeFlow - Architecture Blueprint
+# CloudCode - Architecture Blueprint
 
 ## System Overview
 
-CodeFlow is a mobile-first Progressive Web Application (PWA) for coding with hybrid execution capabilities. The system supports both client-side WebAssembly-based execution for interpreted languages and remote server-side execution for compiled languages.
+CloudCode is a mobile-first Progressive Web Application (PWA) for coding with hybrid execution capabilities. The system supports both client-side WebAssembly-based execution for interpreted languages and remote server-side execution for compiled languages.
 
 ## Architecture Diagram
 
@@ -242,7 +242,7 @@ User Action → IndexedDB Storage → Sync Queue
 ### IndexedDB Schema
 
 ```typescript
-interface CodeFlowDB {
+interface CloudCodeDB {
   files: {
     key: string
     value: {

@@ -8,7 +8,7 @@ import Terminal from '@/components/Terminal'
 import { useExecutionWorker } from '@/hooks/useExecutionWorker'
 
 export default function Home() {
-  const [code, setCode] = useState('console.log("Hello, World!");\nconsole.log("Welcome to CodeFlow!");')
+  const [code, setCode] = useState('console.log("Hello, World!");\nconsole.log("Welcome to CloudCode!");')
   const [language, setLanguage] = useState('javascript')
   const [output, setOutput] = useState('')
   const [isExecuting, setIsExecuting] = useState(false)

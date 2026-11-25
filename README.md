@@ -1,6 +1,6 @@
-# CodeFlow
+# CloudCode
 
-CodeFlow is a mobile-first coding workspace built with Next.js. It combines a CodeMirror editor, a terminal-style output panel, language snippets, and a small-screen accessory bar. The project also includes IndexedDB helpers for local files, projects, execution logs, and a sync queue, plus a service worker for PWA caching.
+CloudCode is a mobile-first coding workspace built with Next.js. It combines a CodeMirror editor, a terminal-style output panel, language snippets, and a small-screen accessory bar. The project also includes IndexedDB helpers for local files, projects, execution logs, and a sync queue, plus a service worker for PWA caching.
 
 > **Project status:** This repository is a prototype. The `/api/execute` route currently returns simulated output for C++, Rust, Go, and Java; it does not compile or run submitted code. Treat the execution endpoint as a demo, not as a secure production sandbox. Confirm client-side language support in the worker before relying on it.
 

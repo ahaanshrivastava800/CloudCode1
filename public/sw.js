@@ -1,6 +1,6 @@
 // Simple service worker for PWA functionality
-const CACHE_NAME = 'codeflow-v1'
-const OFFLINE_CACHE = 'codeflow-offline'
+const CACHE_NAME = 'cloudcode-v1'
+const OFFLINE_CACHE = 'cloudcode-offline'
 
 // Assets to cache immediately
 const ASSETS_TO_CACHE = [
