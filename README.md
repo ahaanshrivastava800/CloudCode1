@@ -1,5 +1,7 @@
 # CloudCode
 
+**Live Demo:** [https://cloud-code-iota.vercel.app](https://cloud-code-iota.vercel.app)
+
 CloudCode is a mobile-first coding workspace built with Next.js. It combines a CodeMirror editor, a terminal-style output panel, language snippets, and a small-screen accessory bar. The project also includes IndexedDB helpers for local files, projects, execution logs, and a sync queue, plus a service worker for PWA caching.
 
 > **Project status:** This repository is a prototype. The `/api/execute` route currently returns simulated output for C++, Rust, Go, and Java; it does not compile or run submitted code. Treat the execution endpoint as a demo, not as a secure production sandbox. Confirm client-side language support in the worker before relying on it.
@@ -70,6 +72,10 @@ ARCHITECTURE.md         Architecture notes
 | `npm start` | Serve the production build |
 | `npm run lint` | Run the configured Next.js lint command |
 | `npm run generate-pwa` | Run the PWA generation script |
+
+## Deployment
+
+The app is deployed on Vercel at [https://cloud-code-iota.vercel.app](https://cloud-code-iota.vercel.app).
 
 ## Current limitations
 
