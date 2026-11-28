@@ -35,7 +35,7 @@ export default function Home() {
       window.removeEventListener('online', handleOnline)
       window.removeEventListener('offline', handleOffline)
     }
-  }, [])
+  }, [initializeWorker])
 
   const handleExecute = async () => {
     setIsExecuting(true)
@@ -95,7 +95,7 @@ export default function Home() {
       {/* Main Content - Adaptive Layout */}
       <div className="flex flex-col md:flex-row h-[calc(100vh-180px)]">
         {/* Editor Section */}
-        <div className={`relative ${showConsole ? 'md:w-1/2' : 'md:w-full'}`}>
+        <div className={`relative flex-1 min-h-0 h-full ${showConsole ? 'md:w-1/2' : 'md:w-full'}`}>
           <CodeEditor
             code={code}
             onChange={setCode}

@@ -2,9 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { EditorView } from '@codemirror/view'
-import { EditorState, Compartment } from '@codemirror/state'
+import { EditorState } from '@codemirror/state'
 import { oneDark } from '@codemirror/theme-one-dark'
-import { createMobileEditorConfig, loadLanguageExtension } from '@/lib/codemirror-config'
+import { loadLanguageExtension } from '@/lib/codemirror-config'
 
 interface CodeEditorProps {
   code: string
@@ -25,95 +25,37 @@ export default function CodeEditor({
 }: CodeEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null)
   const viewRef = useRef<EditorView | null>(null)
+  const onChangeRef = useRef(onChange)
+  const codeRef = useRef(code)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    if (!editorRef.current) return
+    onChangeRef.current = onChange
+  }, [onChange])
 
-    // Create editor state
-    const createState = async () => {
-      const baseExtensions = [
-        EditorView.updateListener.of((update) => {
-          if (update.docChanged) {
-            onChange(update.state.doc.toString())
-          }
-        }),
-        EditorView.theme({
-          '&': {
-            height: '100%',
-            fontSize: '14px',
-          },
-          '.cm-content': {
-            padding: '12px',
-            fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
-          },
-          '.cm-scroller': {
-            overflow: 'auto',
-          },
-        }),
-      ]
-
-      // Add theme
-      if (theme === 'dark') {
-        baseExtensions.push(oneDark)
-      }
-
-      // Load language extension
-      const langExtension = await loadLanguageExtension(language)
-      if (Array.isArray(langExtension)) {
-        baseExtensions.push(...langExtension)
-      } else if (langExtension) {
-        baseExtensions.push(langExtension)
-      }
-
-      // Optional autocomplete
-      if (enableAutocomplete) {
-        const { autocompletion } = await import('@codemirror/autocomplete')
-        baseExtensions.push(autocompletion())
-      }
-
-      return EditorState.create({
-        doc: code,
-        extensions: baseExtensions,
-      })
-    }
-
-    // Initialize editor
-    createState().then((state) => {
-      if (editorRef.current && !viewRef.current) {
-        viewRef.current = new EditorView({
-          state,
-          parent: editorRef.current,
-        })
-        setIsLoading(false)
-      }
-    })
-
-    // Cleanup
-    return () => {
-      if (viewRef.current) {
-        viewRef.current.destroy()
-        viewRef.current = null
-      }
-    }
-  }, []) // Only run on mount
-
-  // Re-create editor when language, theme, or autocomplete changes
   useEffect(() => {
-    if (!editorRef.current) return
+    codeRef.current = code
+  }, [code])
 
-    const recreateEditor = async () => {
-      // Destroy existing editor
+  // Create or recreate editor when language, theme, or autocomplete changes
+  useEffect(() => {
+    const container = editorRef.current
+    if (!container) return
+
+    let cancelled = false
+
+    const initEditor = async () => {
+      setIsLoading(true)
+
       if (viewRef.current) {
         viewRef.current.destroy()
         viewRef.current = null
       }
 
-      // Create new editor state
       const baseExtensions = [
         EditorView.updateListener.of((update) => {
           if (update.docChanged) {
-            onChange(update.state.doc.toString())
+            onChangeRef.current(update.state.doc.toString())
           }
         }),
         EditorView.theme({
@@ -131,12 +73,10 @@ export default function CodeEditor({
         }),
       ]
 
-      // Add theme
       if (theme === 'dark') {
         baseExtensions.push(oneDark)
       }
 
-      // Load language extension
       const langExtension = await loadLanguageExtension(language)
       if (Array.isArray(langExtension)) {
         baseExtensions.push(...langExtension)
@@ -144,28 +84,34 @@ export default function CodeEditor({
         baseExtensions.push(langExtension)
       }
 
-      // Optional autocomplete
       if (enableAutocomplete) {
         const { autocompletion } = await import('@codemirror/autocomplete')
         baseExtensions.push(autocompletion())
       }
+
+      if (cancelled || !editorRef.current) return
 
       const state = EditorState.create({
-        doc: code,
+        doc: codeRef.current,
         extensions: baseExtensions,
       })
 
-      // Create new editor view
-      if (editorRef.current) {
-        viewRef.current = new EditorView({
-          state,
-          parent: editorRef.current,
-        })
-        setIsLoading(false)
-      }
+      viewRef.current = new EditorView({
+        state,
+        parent: editorRef.current,
+      })
+      setIsLoading(false)
     }
 
-    recreateEditor()
+    initEditor()
+
+    return () => {
+      cancelled = true
+      if (viewRef.current) {
+        viewRef.current.destroy()
+        viewRef.current = null
+      }
+    }
   }, [language, theme, enableAutocomplete])
 
   // Update code when it changes externally

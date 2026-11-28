@@ -1,26 +1,28 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import ServiceWorkerRegistration from './ServiceWorkerRegistration'
-
-const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'CloudCode - Mobile-First Coding Platform',
   description: 'A mobile-first progressive web application for coding with hybrid execution capabilities',
   manifest: '/manifest.json',
-  themeColor: '#0ea5e9',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
     title: 'CloudCode',
   },
+  icons: {
+    icon: '/icon.svg',
+    apple: '/icon.svg',
+  },
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: '#0ea5e9',
 }
 
 export default function RootLayout({
@@ -30,11 +32,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" href="/icon-192.png" />
-      </head>
-      <body className={inter.className}>
+      <body className="font-sans antialiased">
         {children}
         <ServiceWorkerRegistration />
       </body>

@@ -11,12 +11,12 @@ interface CloudCodeDB extends DBSchema {
       language: string
       createdAt: number
       updatedAt: number
-      synced: boolean
+      synced: number
     }
     indexes: {
       'by-updatedAt': number
       'by-language': string
-      'by-synced': boolean
+      'by-synced': number
     }
   }
   executionLogs: {
@@ -29,12 +29,12 @@ interface CloudCodeDB extends DBSchema {
       output: string
       error?: string
       timestamp: number
-      synced: boolean
+      synced: number
     }
     indexes: {
       'by-fileId': string
       'by-timestamp': number
-      'by-synced': boolean
+      'by-synced': number
     }
   }
   projects: {
@@ -46,11 +46,11 @@ interface CloudCodeDB extends DBSchema {
       createdAt: number
       updatedAt: number
       fileIds: string[]
-      synced: boolean
+      synced: number
     }
     indexes: {
       'by-updatedAt': number
-      'by-synced': boolean
+      'by-synced': number
     }
   }
   syncQueue: {
@@ -129,7 +129,7 @@ export async function saveFile(file: {
     ...file,
     createdAt: Date.now(),
     updatedAt: Date.now(),
-    synced: file.synced ?? false,
+    synced: file.synced ? 1 : 0,
   }
   
   await database.put('files', fileWithTimestamp)
@@ -187,7 +187,7 @@ export async function saveExecutionLog(log: {
     ...log,
     id: `${log.fileId}-${Date.now()}`,
     timestamp: Date.now(),
-    synced: log.synced ?? false,
+    synced: log.synced ? 1 : 0,
   }
   
   await database.put('executionLogs', logWithTimestamp)
@@ -227,7 +227,7 @@ export async function saveProject(project: {
     ...project,
     createdAt: Date.now(),
     updatedAt: Date.now(),
-    synced: project.synced ?? false,
+    synced: project.synced ? 1 : 0,
   }
   
   await database.put('projects', projectWithTimestamp)
@@ -304,7 +304,7 @@ export async function updateSyncRetryCount(id: string, retryCount: number) {
 // Utility functions
 export async function clearAllData() {
   const database = await initDB()
-  const stores = ['files', 'executionLogs', 'projects', 'syncQueue']
+  const stores = ['files', 'executionLogs', 'projects', 'syncQueue'] as const
   
   for (const store of stores) {
     await database.clear(store)
@@ -314,9 +314,9 @@ export async function clearAllData() {
 export async function getUnsyncedItems() {
   const database = await initDB()
   
-  const unsyncedFiles = await database.getAllFromIndex('files', 'by-synced', false)
-  const unsyncedLogs = await database.getAllFromIndex('executionLogs', 'by-synced', false)
-  const unsyncedProjects = await database.getAllFromIndex('projects', 'by-synced', false)
+  const unsyncedFiles = await database.getAllFromIndex('files', 'by-synced', 0)
+  const unsyncedLogs = await database.getAllFromIndex('executionLogs', 'by-synced', 0)
+  const unsyncedProjects = await database.getAllFromIndex('projects', 'by-synced', 0)
   
   return {
     files: unsyncedFiles,
@@ -332,21 +332,21 @@ export async function markAsSynced(type: 'file' | 'execution' | 'project', id: s
     case 'file': {
       const file = await database.get('files', id)
       if (file) {
-        await database.put('files', { ...file, synced: true })
+        await database.put('files', { ...file, synced: 1 })
       }
       break
     }
     case 'execution': {
       const log = await database.get('executionLogs', id)
       if (log) {
-        await database.put('executionLogs', { ...log, synced: true })
+        await database.put('executionLogs', { ...log, synced: 1 })
       }
       break
     }
     case 'project': {
       const project = await database.get('projects', id)
       if (project) {
-        await database.put('projects', { ...project, synced: true })
+        await database.put('projects', { ...project, synced: 1 })
       }
       break
     }

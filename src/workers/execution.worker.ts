@@ -19,11 +19,14 @@ let pyodide: any = null
 let sqlJs: any = null
 let isInitialized = false
 
+// Dynamic CDN loader that bypasses static bundler module resolution
+const dynamicImport = (url: string): Promise<any> =>
+  new Function('url', 'return import(url)')(url)
+
 // Initialize Pyodide for Python execution
 async function initPyodide() {
   try {
-    // Dynamic import of Pyodide
-    const { loadPyodide } = await import('https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js')
+    const { loadPyodide } = await dynamicImport('https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js')
     
     pyodide = await loadPyodide({
       indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.24.1/full/',
@@ -43,8 +46,9 @@ async function initPyodide() {
 // Initialize SQL.js for SQL execution
 async function initSqlJs() {
   try {
-    const initSqlJs = await import('sql.js')
-    sqlJs = await initSqlJs.default({
+    const initSqlJsModule = await dynamicImport('https://cdn.jsdelivr.net/npm/sql.js@1.10.3/dist/sql-wasm.js')
+    const initFn = initSqlJsModule.default || initSqlJsModule
+    sqlJs = await initFn({
       locateFile: (file: string) => `https://sql.js.org/dist/${file}`,
     })
     
@@ -84,7 +88,7 @@ sys.stderr = StringIO()
     })
 
     // Execute code with timeout
-    const executionPromise = (async () => {
+    const executionPromise: Promise<ExecutionResponse> = (async (): Promise<ExecutionResponse> => {
       try {
         await pyodide.runPythonAsync(code)
         
@@ -135,7 +139,7 @@ async function executeJavaScript(code: string, timeout: number = 10000): Promise
     })
 
     // Execute code with timeout
-    const executionPromise = (async () => {
+    const executionPromise: Promise<ExecutionResponse> = (async (): Promise<ExecutionResponse> => {
       try {
         // Create a sandboxed execution environment
         const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor
@@ -211,7 +215,7 @@ async function executeSQL(code: string, timeout: number = 10000): Promise<Execut
     })
 
     // Execute code with timeout
-    const executionPromise = (async () => {
+    const executionPromise: Promise<ExecutionResponse> = (async (): Promise<ExecutionResponse> => {
       try {
         const db = new sqlJs.Database()
         

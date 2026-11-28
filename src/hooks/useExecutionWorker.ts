@@ -6,9 +6,6 @@ type ExecutionResult = {
   success: boolean
 }
 
-// Languages that support client-side execution
-const CLIENT_SIDE_LANGUAGES = ['javascript', 'python', 'sql']
-
 // Languages that require remote execution
 const REMOTE_LANGUAGES = ['cpp', 'rust', 'go', 'java']
 
@@ -92,7 +89,7 @@ export function useExecutionWorker() {
             output: `${result}\n\nExecution time: ${executionTime}ms`,
             success: true,
           })
-        }).catch((error) => {
+        }).catch((error: unknown) => {
           clearTimeout(timeoutId)
           resolve({
             output: output.length > 0 ? output.join('\n') : '',
